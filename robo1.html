@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+    <head>
+       
+    </head>
+    <body>
+	<script type="text/javascript" src="//pubnub.github.io/eon/v/eon/0.0.10/eon.js"></script>
+<link type="text/css" rel="stylesheet" href="//pubnub.github.io/eon/v/eon/0.0.10/eon.css"/>
+   <center>
+       <h1>Robotic Arm control input portal</h1>
+   
+    
+    <form id="myForm"> 
+        
+          base angle(0):       <input type="text" name="baseAngle0">
+		  <br>
+          servo set A(0) angle:<input type="text" name="sa0">
+          <br>
+          base angle(1):       <input type="text" name="baseAngle1">
+          <br>
+          Servo set B(1) angle:<input type="text" name="sa1">
+          <br>
+          base angle(2):       <input type="text" name="baseAngle2">
+        
+   </form>
+       
+  <button onclick="myfunc()">Try it</button>
+  
+     <p id="base0"></p>
+     <br>
+     <p id="sa0"></p>
+     <br>
+     <p id="base1"></p>
+     <br>
+     <p id="sa1"></p>
+     <br>
+     <p id="base2"></p>
+     <br>     
+	 <p id="error"></p>
+	  </center>  
+	 
+	 <script>
+         function reverse(s) {
+             var o = '';
+             for (var i = s.length - 1; i >= 0; i--)
+             o += s[i];
+             return o;
+             }
+	 
+		  var pubnub = PUBNUB.init({
+		  publish_key: 'pub-c-91cc8164-31a3-4284-a48d-c48ca710697f',
+          subscribe_key: 'sub-c-314b1b68-61fc-11e6-8de8-02ee2ddab7fe'
+		  });
+          function myfunc(){	  
+		   
+              var base0 = document.getElementById("myForm").elements.item(0).value;
+              var revBase0=reverse(base0);
+              
+              var sa0  = document.getElementById("myForm").elements.item(1).value;
+              var revSa0=reverse(sa0);
+              
+              var base1 = document.getElementById("myForm").elements.item(2).value;
+              var revBase1=reverse(base1);
+              
+              var sa1 = document.getElementById("myForm").elements.item(3).value;
+              var revSa1=reverse(sa1)
+              
+              var base2 = document.getElementById("myForm").elements.item(4).value;
+              var revBase2=reverse(base2);
+              
+              revBase0=revBase0+" ";
+              revSa0=revSa0+ " ";
+              revBase1=revBase1+ " ";
+              revSa1=revSa1+ " ";
+              revBase2=revBase2+ " " + '/';
+              
+              document.getElementById("base0").innerHTML = base0;
+              document.getElementById("sa0").innerHTML = sa0;
+              document.getElementById("base1").innerHTML = base1;
+              document.getElementById("sa1").innerHTML = sa1;
+			  document.getElementById("base2").innerHTML = base2;
+              
+			  pubnub.publish({
+                               channel : 'robochannel',
+                               message : {revBase0,revSa0,revBase1,revSa1,revBase2},
+                               callback : function(m){
+                                                       console.log(m);
+		                                               document.getElementById("error").innerHTML=m;
+													 }
+                            });	
+										
+          }
+          
+      </script>
+      
+	  </body>
+       
+        
+</html>
